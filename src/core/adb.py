@@ -1,6 +1,7 @@
 """ADB client abstraction and helpers."""
 
 import subprocess
+import sys
 from typing import List, Optional, Tuple
 
 from .config import (
@@ -25,14 +26,16 @@ class AdbClient:
     ) -> Tuple[int, str, str]:
         """Run an adb command and return (returncode, stdout, stderr)."""
         cmd = [self._executable] + args
+        kwargs = dict(
+            capture_output=capture,
+            timeout=timeout,
+            encoding="utf-8",
+            errors="replace",
+        )
+        if sys.platform == "win32":
+            kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
         try:
-            result = subprocess.run(
-                cmd,
-                capture_output=capture,
-                timeout=timeout,
-                encoding="utf-8",
-                errors="replace",
-            )
+            result = subprocess.run(cmd, **kwargs)
             out = (result.stdout or "").strip()
             err = (result.stderr or "").strip()
             return result.returncode, out, err
