@@ -1,0 +1,32 @@
+# Local virtual environments
+.venv/
+venv/
+env/
+
+# Build and distribution output
+build/
+dist/
+*.spec.bak
+
+# Python cache / metadata
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs and temp files
+*.log
+*.tmp
+*.temp
+
+# Optional: adb binaries downloaded by scripts
+# Uncomment if you do not want to commit them
+# adb/windows/
+# adb/macos/
+# adb/linux/
