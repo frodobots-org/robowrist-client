@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-自动下载 Android platform-tools（含 adb）到 adb/<platform>/。
-仅使用标准库，无需额外依赖。
+Download Android platform-tools (including adb) to adb/<platform>/.
+Uses stdlib only; no extra dependencies.
 """
 from __future__ import print_function
 
@@ -13,10 +13,10 @@ import shutil
 import ssl
 import time
 
-# 项目根目录（脚本在 scripts/ 下）
+# Project root (script lives under scripts/)
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-# 主源 + 备选镜像（主源失败时依次尝试）
+# Primary and fallback mirrors (tried in order on failure)
 PLATFORM_URLS = {
     "windows": [
         "https://dl.google.com/android/repository/platform-tools-latest-windows.zip",
@@ -32,7 +32,7 @@ PLATFORM_URLS = {
     ],
 }
 
-# Windows 下 adb.exe 依赖同目录的 DLL
+# Windows adb.exe needs these DLLs in the same directory
 WINDOWS_FILES = ["adb.exe", "AdbWinApi.dll", "AdbWinUsbApi.dll"]
 DOWNLOAD_TIMEOUT = 120
 RETRY_COUNT = 3
@@ -52,7 +52,6 @@ def download(url, dest_path):
         from urllib.request import urlopen, Request
     except ImportError:
         from urllib2 import urlopen, Request
-    # 使用默认 SSL 上下文，避免部分环境证书报错
     ctx = ssl.create_default_context()
     req = Request(url, headers={"User-Agent": "Robowrist-ControlCenter/1.0"})
     with urlopen(req, timeout=DOWNLOAD_TIMEOUT, context=ctx) as resp:

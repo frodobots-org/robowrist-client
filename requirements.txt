@@ -1,3 +1,4 @@
 PyQt5>=5.15
 ntplib>=0.4.0
 pyinstaller>=5.0
+Pillow>=9.0

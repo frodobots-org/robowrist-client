@@ -14,8 +14,9 @@ from PyQt5.QtWidgets import (
     QHeaderView,
     QAbstractItemView,
     QInputDialog,
+    QStyle,
 )
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon
 
 from ..core import sdcard_fs
 
@@ -134,13 +135,15 @@ class SdcardPanel(QWidget):
         # Path bar + go up
         path_row = QHBoxLayout()
         self._back_btn = QPushButton(_tr("Go up"))
+        self._back_btn.setIcon(self.style().standardIcon(QStyle.SP_ArrowUp))
         self._back_btn.clicked.connect(self._on_back)
         path_row.addWidget(self._back_btn)
         self._path_edit = QLineEdit()
-        self._path_edit.setPlaceholderText(ROOT)
+        self._path_edit.setPlaceholderText(_tr("Browse device storage path"))
         self._path_edit.returnPressed.connect(self._on_path_go)
         path_row.addWidget(self._path_edit, 1)
         self._refresh_btn = QPushButton(_tr("Refresh"))
+        self._refresh_btn.setIcon(self.style().standardIcon(QStyle.SP_BrowserReload))
         self._refresh_btn.clicked.connect(self._on_refresh)
         path_row.addWidget(self._refresh_btn)
         layout.addLayout(path_row)
@@ -148,16 +151,22 @@ class SdcardPanel(QWidget):
         # Toolbar
         tool_row = QHBoxLayout()
         self._new_dir_btn = QPushButton(_tr("New folder"))
+        self._new_dir_btn.setIcon(self.style().standardIcon(QStyle.SP_FileDialogNewFolder))
         self._new_dir_btn.clicked.connect(self._on_new_dir)
         self._upload_btn = QPushButton(_tr("Upload"))
+        self._upload_btn.setIcon(self.style().standardIcon(QStyle.SP_ArrowUp))
         self._upload_btn.clicked.connect(self._on_upload)
         self._download_btn = QPushButton(_tr("Download"))
+        self._download_btn.setIcon(self.style().standardIcon(QStyle.SP_ArrowDown))
         self._download_btn.clicked.connect(self._on_download)
         self._delete_btn = QPushButton(_tr("Delete"))
+        self._delete_btn.setIcon(self.style().standardIcon(QStyle.SP_TrashIcon))
         self._delete_btn.clicked.connect(self._on_delete)
         self._rename_btn = QPushButton(_tr("Rename"))
+        self._rename_btn.setIcon(self.style().standardIcon(QStyle.SP_FileDialogDetailedView))
         self._rename_btn.clicked.connect(self._on_rename)
         self._format_btn = QPushButton(_tr("Format SD card"))
+        self._format_btn.setProperty("cssClass", "danger")
         self._format_btn.clicked.connect(self._on_format)
         for btn in (
             self._new_dir_btn,

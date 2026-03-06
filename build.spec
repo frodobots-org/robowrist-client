@@ -1,7 +1,6 @@
-# PyInstaller spec：在项目根目录执行
+# PyInstaller spec: run from project root
 # pyinstaller build.spec
-
-# 各平台需在对应系统上分别执行；打包前请将 adb 放入 adb/windows 或 adb/macos 或 adb/linux
+# Build on each OS separately; put adb in adb/windows, adb/macos, or adb/linux before packaging
 
 import sys
 import os
@@ -9,8 +8,8 @@ import os
 block_cipher = None
 root = os.path.abspath(SPECPATH)
 
-# 单文件打包时 adb 解压到临时目录，无法作为 exe 旁目录使用；发布时请将 adb/<platform> 与 exe 放在同一目录
-datas = []
+# Single-file build extracts to temp; ship adb/<platform> next to the exe for release
+datas = [("assets/icon.png", "assets")]
 
 a = Analysis(
     [os.path.join(root, 'src', 'main.py')],
@@ -38,13 +37,8 @@ a = Analysis(
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
-exe = EXE(
-    pyz,
-    a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    [],
+icon_path = os.path.join(root, "assets", "icon.ico")
+exe_kw = dict(
     name='Robowrist-client',
     debug=False,
     bootloader_ignore_signals=False,
@@ -52,5 +46,17 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,  # 不显示控制台
+    console=False,
+)
+if os.path.isfile(icon_path):
+    exe_kw["icon"] = icon_path
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    [],
+    **exe_kw,
 )

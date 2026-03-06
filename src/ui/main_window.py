@@ -17,8 +17,9 @@ from PyQt5.QtWidgets import (
     QTabWidget,
     QProgressDialog,
     QFileDialog,
+    QStyle,
 )
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon
 
 from ..core import adb, time_sync
 from ..core import version as version_module
@@ -100,6 +101,7 @@ class MainWindow(QMainWindow):
         self._dev_combo.setMinimumWidth(260)
         dev_row.addWidget(self._dev_combo, 1)
         self._refresh_btn = QPushButton(_tr("Refresh"))
+        self._refresh_btn.setIcon(self.style().standardIcon(QStyle.SP_BrowserReload))
         self._refresh_btn.clicked.connect(self._on_refresh_devices)
         dev_row.addWidget(self._refresh_btn)
         dev_layout.addLayout(dev_row)
@@ -131,6 +133,8 @@ class MainWindow(QMainWindow):
         sync_layout.addWidget(sync_desc)
         self._sync_btn = QPushButton(_tr("Sync time to RTC"))
         self._sync_btn.setMinimumHeight(40)
+        self._sync_btn.setProperty("cssClass", "primary")
+        self._sync_btn.setIcon(self.style().standardIcon(QStyle.SP_BrowserReload))
         self._sync_btn.clicked.connect(self._on_sync_time)
         sync_layout.addWidget(self._sync_btn)
         layout_time.addWidget(sync_group)
@@ -147,25 +151,39 @@ class MainWindow(QMainWindow):
 
         self._tabs.addTab(tab_time, _tr("Time sync"))
         self._sdcard_panel = SdcardPanel(self._current_serial)
-        self._tabs.addTab(self._sdcard_panel, _tr("Device storage (/mnt/sdcard)"))
+        self._tabs.addTab(
+            self._sdcard_panel,
+            self.style().standardIcon(QStyle.SP_DirHomeIcon),
+            _tr("Device storage"),
+        )
         # OTA tab
         tab_ota = QWidget()
         layout_ota = QVBoxLayout(tab_ota)
-        ota_desc = QLabel(_tr("Upload an OTA package. It will be stored as /userdata/update_ota.tar and the device will reboot to recovery."))
+        ota_desc = QLabel(
+            _tr("Choose a firmware file, then click \"Start OTA\" to upload and update the device.")
+        )
         ota_desc.setWordWrap(True)
         layout_ota.addWidget(ota_desc)
         ota_row = QHBoxLayout()
         self._ota_path_edit = QLineEdit()
         self._ota_path_edit.setReadOnly(True)
+        self._ota_path_edit.setPlaceholderText(_tr("Choose an OTA package to upload"))
         ota_row.addWidget(self._ota_path_edit, 1)
         self._ota_browse_btn = QPushButton(_tr("Choose OTA file"))
+        self._ota_browse_btn.setIcon(self.style().standardIcon(QStyle.SP_DialogOpenButton))
         self._ota_browse_btn.clicked.connect(self._on_choose_ota)
         ota_row.addWidget(self._ota_browse_btn)
         self._ota_start_btn = QPushButton(_tr("Start OTA"))
+        self._ota_start_btn.setProperty("cssClass", "primary")
+        self._ota_start_btn.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self._ota_start_btn.clicked.connect(self._on_start_ota)
         ota_row.addWidget(self._ota_start_btn)
         layout_ota.addLayout(ota_row)
-        self._tabs.addTab(tab_ota, _tr("OTA"))
+        self._tabs.addTab(
+            tab_ota,
+            self.style().standardIcon(QStyle.SP_ArrowUp),
+            _tr("OTA"),
+        )
         self._tabs.currentChanged.connect(self._on_tab_changed)
         layout.addWidget(self._tabs)
 
